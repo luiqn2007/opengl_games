@@ -5,8 +5,7 @@ const int N = 128;
 layout(points) in;
 layout(triangle_strip, max_vertices=N) out;
 
-uniform float r;
-uniform float ratio; // w / h
+uniform float ratio;
 
 in vec3 gColor[];
 
@@ -16,7 +15,8 @@ const float da = 3.1415926 * 2 / N;
 
 void main() {
     fColor = vec4(gColor[0], 1);
-    vec4 pos = gl_in[0].gl_Position;
+    vec2 pos = gl_in[0].gl_Position.xy;
+    float r = gl_in[0].gl_Position.z;
     for (int i = 1; i <= N / 2; ++i) {
         int idx1 = N / 2 - i;
         int idx2 = N / 2 + i - 1;
@@ -44,7 +44,6 @@ void main() {
             gl_Position = vec4(dx, dy, 0, 1);
             EmitVertex();
         }
-
-        EndPrimitive();
     }
+    EndPrimitive();
 }

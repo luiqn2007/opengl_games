@@ -4,13 +4,13 @@
 #include "GLFW/glfw3.h"
 
 #include "GLUtils.h"
-#include "module/ModuleCircle.h"
+#include "module/ModuleBall.h"
 
 using std::cin;
 using std::cout;
 using std::endl;
 
-using MT = ModuleCircle;
+using MT = module_ball::ModuleBall;
 
 void onGLFWError(int error_code, const char *description) {
     cout << "ERROR: GLFW Error " << error_code << ": " << description << endl;
@@ -37,6 +37,7 @@ GLFWwindow *createWindow(int width = 800, int height = 600, const char *title = 
         gl::window::resize(w, h);
     });
     glViewport(0, 0, width, height);
+    gl::window::resize(width, height);
     return window;
 }
 
@@ -67,8 +68,8 @@ int main() {
 
     MT module;
 
-    gl::timer::init();
     if (!module.init()) return cleanAndExit(-1, &module);
+    gl::window::resize(gl::window::width, gl::window::height);
     while (glfwWindowShouldClose(window) == GLFW_FALSE) {
         gl::timer::update();
         if (!module.loop())

@@ -8,7 +8,7 @@ bool ModuleCircle::init() {
     using namespace gl::shader;
 
     if (!createShader(ROOT_DIR / "glsl" / "circle.vert", vert)) return false;
-    if (!createShader(ROOT_DIR / "glsl" / "color.frag", frag)) return false;
+    if (!createShader(ROOT_DIR / "glsl" / "ball.frag", frag)) return false;
     if (!createProgram(program, 2, vert, frag)) return false;
 
     glUseProgram(program);

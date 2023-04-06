@@ -10,7 +10,7 @@ bool ModuleTest::init() {
     });
 
     if (!gl::shader::createShader(ROOT_DIR / "glsl" / "test.vert", vert)) return false;
-    if (!gl::shader::createShader(ROOT_DIR / "glsl" / "color.frag", frag)) return false;
+    if (!gl::shader::createShader(ROOT_DIR / "glsl" / "ball.frag", frag)) return false;
     if (!gl::shader::createProgram(program, 2, vert, frag)) return false;
 
     glCreateBuffers(1, &bufVertices);

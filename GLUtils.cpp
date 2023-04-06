@@ -8,26 +8,20 @@ namespace gl {
 
     namespace random {
         std::random_device seed;
-        std::mt19937_64 engine {seed()};
+        std::mt19937_64 engine{seed()};
         std::uniform_int_distribution<> distribution{0, 100};
     }
 
     namespace timer {
-        void init() {
-
-        }
+        float previous;
+        float current;
+        float delta;
 
         void update() {
-
+            previous = current;
+            current = glfwGetTime();
+            delta = current - previous;
         }
-
-        void delta() {
-
-        }
-    }
-
-    namespace error {
-
     }
 
     namespace debug {
@@ -46,6 +40,43 @@ namespace gl {
         void mapBuffer(GLuint buffer) {
             void *p = glMapNamedBuffer(buffer, GL_READ_ONLY);
             glUnmapNamedBuffer(buffer);
+        }
+
+        bool checkError(const char *name, bool logNoError) {
+            GLenum error = glGetError();
+            if (error == GL_NO_ERROR && !logNoError) {
+                return true;
+            }
+            cout << name << ": ";
+            switch (error) {
+                case GL_NO_ERROR:
+                    cout << "GL_NO_ERROR" << endl;
+                    return true;
+                case GL_INVALID_ENUM:
+                    cout << "GL_INVALID_ENUM" << endl;
+                    return false;
+                case GL_INVALID_VALUE:
+                    cout << "GL_INVALID_VALUE" << endl;
+                    return false;
+                case GL_INVALID_OPERATION:
+                    cout << "GL_INVALID_OPERATION" << endl;
+                    return false;
+                case GL_INVALID_FRAMEBUFFER_OPERATION:
+                    cout << "GL_INVALID_FRAMEBUFFER_OPERATION" << endl;
+                    return false;
+                case GL_OUT_OF_MEMORY:
+                    cout << "GL_OUT_OF_MEMORY" << endl;
+                    return false;
+                case GL_STACK_UNDERFLOW:
+                    cout << "GL_STACK_UNDERFLOW" << endl;
+                    return false;
+                case GL_STACK_OVERFLOW:
+                    cout << "GL_STACK_OVERFLOW" << endl;
+                    return false;
+                default:
+                    cout << "Unknown error code " << error << endl;
+                    return false;
+            }
         }
     }
 
@@ -154,10 +185,21 @@ namespace gl {
         int width = 0, height = 0;
         float ratio = 1;
 
+        std::vector<std::function<void()>> onResized;
+
         void resize(int _width, int _height) {
             width = _width;
             height = _height;
             ratio = (float) _width / _height;
+
+            for (const auto &item: onResized) item();
+        }
+    }
+
+    namespace glmath {
+
+        float distance2(const glm::vec2 &a, const glm::vec2 &b) {
+            return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
         }
     }
 
@@ -171,6 +213,10 @@ namespace gl {
             ROOT_DIR = ROOT_DIR.parent_path();
         }
 
+        // timer
+        timer::current = glfwGetTime();
+        timer::previous = timer::current;
+        timer::delta = 0;
         return true;
     }
 

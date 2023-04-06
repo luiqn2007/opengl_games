@@ -22,9 +22,11 @@
 #include <map>
 #include <cstdarg>
 #include <random>
+#include <cmath>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/vec2.hpp>
 
 using std::cout;
 using std::endl;
@@ -51,15 +53,11 @@ namespace gl {
     }
 
     namespace timer {
-        void init();
+        extern float previous;
+        extern float current;
+        extern float delta;
 
         void update();
-
-        void delta();
-    }
-
-    namespace error {
-
     }
 
     namespace debug {
@@ -68,6 +66,8 @@ namespace gl {
         void mapElement();
 
         void mapBuffer(GLuint buffer);
+
+        bool checkError(const char *name, bool logNoError = false);
     }
 
     namespace resource {
@@ -89,7 +89,19 @@ namespace gl {
         extern int width, height;
         extern float ratio;
 
+        extern std::vector<std::function<void()>> onResized;
+
         void resize(int width, int height);
+    }
+
+    namespace glmath {
+
+        float distance2(const glm::vec2 &a, const glm::vec2 &b);
+
+        inline float distance(const glm::vec2 &a, const glm::vec2 &b) {
+            return std::sqrt(distance2(a, b));
+        }
+
     }
 
     bool load();
